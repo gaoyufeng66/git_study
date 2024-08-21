@@ -1,0 +1,132 @@
+# 版本控制 --> git管理文件夹
+
+1、进入要管理的文件夹（进入）
+2、初始化（提名）让git帮助我们管理当前文件夹
+    右键，选择Open git Bash here，输入命令： 
+    git init
+
+    # 检测当前目录下文件的状态
+    git status
+
+    # git status 显示状态时，中文文件乱码解决方案：
+    步骤一：设置引用路径的值为false
+    运行下面命令
+    git config --global core.quotepath false
+
+    步骤二：设置git bash终端的编码为UTF-8
+    1.在git bash的空白处右键，选择 Options 
+    2.将 Text(中文 是 文本) 下的 Local 设置为 zh_CN,字符集选中为 UTF-8,点击Save保存设置。
+
+    三种状态的变化
+        红色：新增的文件/修改了的老文件 -> 执行 git add 文件名 或者 git add .
+        绿色：git已经管理起来    -> git commit -m '描述信息'
+        生成版本：
+
+
+3、管理
+    # 管理 Git笔记.txt 文件
+    git add Git笔记.txt
+
+    # 管理当前路径的所有的文件
+    git add .
+
+    # git使用commit命令后显示Author identity unknown的解决方法
+    在git命令行中重新输入命令：
+    先输入：
+    git config --global user.name “你的名字”
+    回车后，
+    再输入：
+    git config --global user.email “你的邮箱地址”
+    完成后再提交就没问题了。
+    git commit -m '版本'
+
+    # 如果产生了修改，需要重新使用 git add 修改文件名 或者 git add .
+    git add .
+
+    # 提交后，记得再次执行生成版本命令
+    git commit -m '版本'
+
+4、生成版本
+    # 查看所有的版本
+    git log
+
+
+git三大区域：工作区（检测新增，修改），暂存区（add），版本区（commit）
+
+5、回滚
+    # 回滚至之前版本
+    git reset --hard 版本号
+
+    # 回滚至之后版本
+    # git reflog 可以看到所有的版本记录和变更版本记录
+    git reflog
+
+命令总结
+    # 初始化
+    git init
+    # 管理当前文件夹所有文件，提交至暂存区
+    git add .
+    # 发布版本
+    git commit -m 版本名
+    # 查看已发布版本
+    git log
+    # 回滚版本
+    git reset --hard 版本号
+    # 查看所有已发布版本
+    git reflog
+    # 将已修改的内容回退至最原始状态
+    git checkout -- 文件名
+    # 回退至已修改（工作区） 由绿色变成红色 ，以下两行命令通常一起使用
+    git reset HEAD 文件名
+    git checkout -- 文件名
+    # 查看当前所处分支
+    git branch
+
+6.分支
+    分支是每次版本提交都是只记录修改和新增的部分，未修改的都指向之前一个版本
+    可以有多个版本同时指向前一个版本
+
+7.紧急修复线上bug的思路
+    主干线:master
+    开发分支:dev(development)分支
+    bug分支:bug分支
+
+8.紧急修复线上bug的实操
+    
+    #命令总结
+    # 查看当前所处分支
+    git branch
+    # 创建分支
+    git branch 分支名称
+    # 切换分支
+    git checkout 分支名称
+    # 分支合并（可能产生冲突，产生冲突的原因是两个都有修改 ，但是git不知道保留哪个）
+    git merge 要合并的分支
+    注意：一定要切换分支在合并
+    # 删除分支
+    git branch -d 分支名称
+
+9.工作流
+    默认分支（master）主分支，只保留正式版本和线上版本
+    开发分支(dev) 开发分支 开发新功能分支
+    
+9.github
+    ①注册账号
+    ②创建仓库
+    ③本地代码推送仓库
+    ④远程下载代码仓库代码
+   
+   1、给远程仓库起别名
+    git remote add origan 远程仓库地址
+   注意：其中 origan 可以起任意的名字
+   2、修改分支的名字
+    git branch -M main
+   3、向远程提交推送代码
+   git push -u origan main
+   
+   1、克隆远程仓库的代码
+   git clone 远程仓库的地址 （内部已经实现 git remote add origan 远程仓库地址 起别名）
+   git clone https://github.com/gaoyufeng66/git_study.git
+   2、切换分支
+   git checkout 分支
+   
