@@ -130,3 +130,5 @@ git三大区域：工作区（检测新增，修改），暂存区（add），�
    2、切换分支
    git checkout 分支
    
+   git pull origin 将远程代码仓库的代码拉下来
+   
