@@ -249,20 +249,61 @@ git checkout 分支名称
 	git push origin dev
 ```
 
-
-
-#### 2.6.8 其他
+#### 2.6.6 在公司约妹子忘记提交代码
 
 ```
+1. 在公司拉代码
+	git pull origin dev
+	发现没有在公司写的代码
+2. 在公司开发其他功能
+	git add .
+	git commit -m 'xx'
+3. 由于和妹子吃饭忘记push
+```
+
+#### 2.6.7 到家继续写代码
+
+```
+1.  到家拉取代码（发现没有更新，发现在公司写的代码忘记提交）
+	git pull origin dev
+2.	开发其他功能
+3.	把dev分支推送到远程
+	git add .
+    git commit -m 'xx'
+    git push origin dev
+```
+
+#### 2.6.8 到公司继续写代码
+
+```
+1. 在公司拉取代码，把在家写的代码拉取到本地（有合并，可能会产生冲突）
+	当同一个代码文件，同一行写入的内容不一样时会产生冲突
+	git pull origin dev
+2. 手工解决冲突
+3. 继续开发其他功能
+4. 把dev分支推到远程
+	git add .
+	git commit -m 'xx'
+	git push commit dev
+```
+
+#### 2.6.9 git pull相当于 git fetch 和 git merge
+
+```
+直接将远程代码仓库的dev拉取并合并到本地dev中
 git pull origin dev
 等价于
+先将远程仓库的代码拉取到本地的版本库中
 git fetch origin dev
+再讲版本库中拉到的最新的代码合并到工作区中
 git merge origin/dev
 ```
 
+![image-20240823000547245](Git实战.assets/image-20240823000547245.png)
 
+#### 2.6.9 rebase的作用？
 
-
+rebase可以保证提交记录简洁，不分叉 
 
 
 
