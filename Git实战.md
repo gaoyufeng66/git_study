@@ -287,7 +287,7 @@ git checkout 分支名称
 	git push commit dev
 ```
 
-#### 2.6.9 git pull相当于 git fetch 和 git merge
+#### 2.6.9 git pull
 
 ```
 直接将远程代码仓库的dev拉取并合并到本地dev中
@@ -303,5 +303,179 @@ git merge origin/dev
 
 #### 2.6.9 rebase的作用？
 
-rebase可以保证提交记录简洁，不分叉 
+##### 2.6.9.1 rebase场景一：将多个版本记录合并为一个版本记录
+
+rebase可以保证提交记录简洁，不分叉 ，可以将多个版本合并为一个版本
+
+==尽量不要将已经移交到远程代码仓库的版本（已push的版本）进行合并，不然会因代码版本记录不一致而产生问题==
+
+```
+touch 1.py
+git add .
+git commit -m 'v1'
+
+touch 2.py
+git add .
+git commit -m 'v2'
+
+touch 3.py
+git add .
+git commit -m 'v3'
+
+touch 4.py
+git add .
+git commit -m 'v4'
+
+git log
+
+可以用以下两个方法将将版本合并
+git rebase -i 版本号
+git rebase -i HEAD~3
+注意：修改后要用wq命令保存，需要合并版本将前面的pick修改为s，表示将V3和V4版本合并为V2版本
+```
+
+将pick修改为s
+
+```
+（ i 是插入,dd 是删除一行 :wq是保存  :q!是强制退出）
+```
+
+![image-20240825153904334](Git实战.assets/image-20240825153904334.png)
+
+给合并后的版本起一个名字
+
+![image-20240825154133862](Git实战.assets/image-20240825154133862.png)
+
+最终版本效果如下图所示
+
+![image-20240825154357948](Git实战.assets/image-20240825154357948.png)
+
+##### 2.6.9.2 rebase场景二：将dev分支合并到master分支并只有一条分支
+
+将dev分支合并到主分支，只有一条分支
+
+```
+git log版本记录分支图形化
+git log --graph
+git log版本记录分支图形化简洁版（只有版本号和版本名称）
+git log --graph --pretty=format:"%h %s"
+
+只想有一个分支，将dev分支删掉并合并到master分支中
+git checkout dev
+git rebase master 
+git checkout master
+git merge dev
+```
+
+##### 2.6.9.3 rebase场景三：git pull 可以替换为 git fetch 和 git rebase
+
+```
+正常拉取数据：
+git pull origin dev
+替换为（也可以将dev分支合并到master分支并只有一条分支）：
+git fetch origin dev
+git rebase origin/dev
+```
+
+注意：git rebase 产生冲突
+
+场景：在master分支和在dev分支修改了同一个文件，产生冲突
+
+![image-20240825200634061](Git实战.assets/image-20240825200634061.png)
+
+解决方案: 
+
+```
+解决冲突文件
+git add .
+git rebase --continue
+然后确认版本名称(会自动弹出)
+git checkout master
+git merge dev
+```
+
+#### 2.6.10 Araxis merge工具的使用（快速解决冲突）
+
+首先找到配置文件路径  ==C:\Users\gaoyufeng\.gitconfig==
+
+自定义notepad++快捷键（Ctrl + Shift + C 复制当前文件路径 Ctrl + Shift + D 打开当前文件所在位置）
+
+将配置文件修改为如下内容：其中 araxis merge的路径替换为系统真实路径
+
+```
+[i18n]
+	commitencoding = utf-8
+	logoutputencoding = utf-8
+[core]
+	quotepath = false
+[user]
+	name = gaoyufeng
+	email = 2592198859@qq.com
+[http]
+	sslVerify = false
+[diff]
+    external = \"D:\\Araxis\\Araxis Merge\\araxisgitdiff.exe\"
+[mergetool "araxis"]
+    cmd = \"D:\\Araxis\\Araxis Merge\\araxisgitmerge.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+    trustExitCode = true
+[mergetool]
+keepBackup = false
+
+[merge] 
+tool = araxis
+stat = true
+```
+
+当使用merge或者pull产生冲突时，可以用 git mergetool 冲突文件名 来快速处理冲突
+
+注意：也可以使用beyond compare 来处理
+
+#### 总结
+
+-  添加远程代码仓库链接
+
+  ```
+  git remote add origin 地址
+  ```
+
+-  推送代码
+
+  ```
+  git push origin dev
+  ```
+
+- 下载代码
+
+  ```
+  git clone 地址
+  ```
+
+- 拉取代码
+
+  ```
+  git pull origin dev
+  等价于
+  git fetch origin dev
+  git merge origin/dev
+  ```
+
+- 保持代码提交整洁（变基）
+
+  ```
+  git rebase 分支
+  ```
+
+- 记录的图形展示
+
+  ```
+  git log --graph --pretty=format:"%h %s"
+  ```
+
+
+
+
+
+
+
+
 
