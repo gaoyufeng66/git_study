@@ -471,9 +471,214 @@ stat = true
   git log --graph --pretty=format:"%h %s"
   ```
 
+### 2.7 第六阶段 多人协同开发工作流
 
+#### 2.7.1 创建项目&邀请成员
 
+协同开发时，需要所有成员都可以对同一个项目进行操作，需要邀请成员并赋予权限，否则无法开发。
 
+github支持两种创建项目的方式（供多人协同开发）
+
+​	1.合作者，将用户添加到仓库合作者中之后，该用户就可以向当前仓库提交代码。collaborators(合作者)
+
+![image-20240826152802293](Git实战.assets/image-20240826152802293.png)
+
+​	2.组织，将成员邀请进入组织，组织下可以创建多个仓库，组织成员可以向组织下仓库提交代码。
+
+![image-20240826153103890](Git实战.assets/image-20240826153103890.png)
+
+![image-20240826153144584](Git实战.assets/image-20240826153144584.png)
+
+##### 扩展：Tag标签管理
+
+为了能清晰的管理版本，在公司不会直接使用commit来做版本，会基于Tag来实现：V1.0、V1.2、V2.0 版本。
+
+在commit后面打了一个tag标签
+
+```
+创建本地创建Tag信息
+git tag -a v1.0 -m '版本介绍'
+删除Tag
+git tag -d v1.0
+将本地tag信息推到远程仓库
+git push origin --tags
+更新本地tag版本信息
+git pull origin --tags
+
+切换tag
+git checkout v1.0
+指定tag下载代码
+git clone -b v0.1 地址
+```
+
+2.7.2 公司其他同事开发
+
+- 先注册github或gitlab账号
+- 邀请公司同事进入组织（默认对组织中的项目有读权限）
+
+![image-20240826162833067](Git实战.assets/image-20240826162833067.png)
+
+- 邀请同事成为项目的合作者
+
+![image-20240826162910752](Git实战.assets/image-20240826162910752.png)
+
+- 同事下载项目到自己的电脑上开发
+
+  ```
+  从远程代码仓库下载代码
+  git clone https://github.com/oldboy-org/dbhot.git
+  切换目录
+  cd dbhot
+  切换到dev分支
+  git checkout dev
+  切换并创建ddz分支
+  git checkout -b ddz
+  开发，写代码...
+  
+  git add .
+  git commit -m '斗地主功能开发完成'
+  git push origin ddz
+  ```
+
+#### 2.7.3 code review
+
+1.配置，代码review之后才能合并到dev分支
+
+![image-20240826164551488](Git实战.assets/image-20240826164551488.png)![image-20240826164622768](Git实战.assets/image-20240826164622768.png)
+
+2.同事提交code review 申请
+
+![image-20240826164653560](Git实战.assets/image-20240826164653560.png)
+
+![image-20240826170430908](Git实战.assets/image-20240826170430908.png)
+
+3.组长做code review
+
+![image-20240826170501279](Git实战.assets/image-20240826170501279.png)
+
+![image-20240826170514282](Git实战.assets/image-20240826170514282.png)
+
+#### 2.7.4 测试上线（预发布）
+
+由专业团队或团队leader执行以下步骤：
+
+ 1.基于dev分值创建release分值
+
+```
+git checkout dev
+git checkout -b release
+```
+
+2.测试
+
+3.合并到master
+
+```
+使用pull request
+本地将release合并到master分值
+```
+
+4.在master分支上打tag标签
+
+```
+git tag -a v2 -m '第二版 斗地主功能'
+git push origin --tags
+```
+
+5.运维人员下载代码做上线
+
+```
+git clone -b v2 地址
+```
+
+2.9 第七阶段：给开源软件贡献代码
+
+1.fork源代码 将比尔呢源代码拷贝到我自己的远程仓库。
+
+2.在自己仓库进行代码修改
+
+3.给源代码的作者提交 修复bug的申请（pull request）
+
+## 第三章 其他
+
+3.1 配置
+
+- 项目配置文件：项目/.git/config
+
+  ```
+  git config --local user.name '高玉峰'
+  git config --local user.email '2592198859@qq.com'
+  ```
+
+- 全局配置文件:~/.gitconfig
+
+  ```
+  git config --gloabl user.name = 'gaoyufeng'
+  git config --global user.email = '2592198859@qq.com'
+  ```
+
+- 系统配置文件：/etc/.gitconfig
+
+  ```
+  git config --system user.name 'gaoyueng'
+  git config --system user.email '2592198859@qq.com'
+  ```
+
+应用场景:
+
+```
+git config --local user.name '高玉峰'
+git config --local user.email '2592198859@qq.com'
+git config --local merge.tool bc3
+git config --local mergetool.path '/usr/local/bin/bcomp'
+git config --local mergetool.keepBackup false
+git remote add origin 地址 (--local) (默认添加在本地配置文件中)
+```
+
+### 3.2 免密码登录
+
+- URL中体现
+
+  ```
+  原来的地址: https://github.com/gaoyufeng66/dbhot.git
+  修改的地址: https://用户名:密码@github.com/gaoyufeng66/dbhot.git
+  
+  git remote add origin https
+  git push origin master
+  ```
+
+- SSH实现
+
+  ```
+  1.生成公钥和私钥（默认放在 ~/.ssh 目录下,id_rsa.pub 公钥/id_rsa私钥）
+  ssh-keygen
+  2.拷贝公钥的内容，并设置到github中
+  3.在git本地中配置ssh地址
+  git remote add origin git@github.com:gaoyufeng/dbhot.git
+  
+  4.以后使用
+  git push origin master
+  ```
+
+- git自动管理凭证
+
+### 3.3 git忽略文件
+
+让git不再管理当前目录下的某些文件
+
+```
+*.h
+!a.h
+files/
+*.py[c|a|d]
+```
+
+更多参考：https://github.com/github/gitignore
+
+### 3.4 github任务管理相关
+
+- issues，文档及任务管理
+- wiki，项目文档
 
 
 
